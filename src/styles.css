@@ -13,3 +13,7 @@
 body {
   color: var(--text-light);
 }
+
+.head-head{
+  padding-top: 2%;
+}

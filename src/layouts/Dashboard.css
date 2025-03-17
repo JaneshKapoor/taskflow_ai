@@ -1,0 +1,48 @@
+.main-flex{
+    display:flex;
+    gap:1%;
+    margin:5% auto;
+    padding-left: 2%;
+    flex-wrap: wrap;
+}
+
+.sidebar_div{
+    border:1px solid white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    padding: 1%;
+    background-color: var(--bg-dark);
+    min-height: 50vh;
+    flex-wrap: wrap;
+}
+
+.header-file{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.progress_track{
+    border:1px solid white;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 70%;
+    padding: 1%;
+    background-color: var(--bg-dark);
+    min-height: 50vh;
+}
+
+.mtbtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0 auto;
+    padding-left:70%;
+    padding-right: 3%;
+
+}
