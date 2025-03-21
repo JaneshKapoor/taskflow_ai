@@ -18,7 +18,7 @@ const Signup = () => {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/dashboard"); // Redirect on successful signup
     } catch (err) {
-      setError("Signup failed. Try again.");
+      setError(err.message || "Signup failed. Try again.");
     }
   };
 
@@ -31,14 +31,14 @@ const Signup = () => {
       <input
         type="email"
         placeholder="Email"
-        className="mb-2 p-2 border"
+        className="mb-2 text-black p-2 border bg-white"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
         placeholder="Password"
-        className="mb-2 p-2 border"
+        className="mb-2 text-black p-2 border bg-white"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />

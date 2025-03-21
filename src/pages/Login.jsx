@@ -17,7 +17,7 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard"); // Redirect on success
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.message || "Invalid email or password");
     }
   };
 
@@ -30,14 +30,14 @@ const Login = () => {
       <input
         type="email"
         placeholder="Email"
-        className="mb-2 text-black p-2 border"
+        className="mb-2 text-black p-2 border bg-white"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
         placeholder="Password"
-        className="mb-2 text-black p-2 border"
+        className="mb-2 text-black p-2 border bg-white"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
