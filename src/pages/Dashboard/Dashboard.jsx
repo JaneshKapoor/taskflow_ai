@@ -26,6 +26,8 @@ const Dashboard = () => {
     return [];
   });
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  // Add state for team members modal
+  const [showTeamMembersModal, setShowTeamMembersModal] = useState(false);
 
   // Save projects to localStorage whenever they change
   useEffect(() => {
@@ -134,58 +136,50 @@ const Dashboard = () => {
         onDeleteProject={handleDeleteProject}
       />
       <div className="flex-1">
-        <div className="flex justify-between items-center p-6 bg-[#1a2a3a] shadow-lg">
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <div className="flex gap-4">
-            <button 
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
-              onClick={() => navigate("/my-tasks")}  
-            >
-              <span>📋</span> My Tasks
-            </button>
-            <button 
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center gap-2"
-              onClick={handleLogout}  
-            >
-              <span>🚪</span> Logout
-            </button>
-          </div>
-        </div>
         <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <div className="flex space-x-4">
+              {/* Add Team Members button */}
+              {selectedProject && (
+                <button
+                  onClick={() => setShowTeamMembersModal(true)}
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors duration-200"
+                >
+                  Team Members
+                </button>
+              )}
+              <button
+                onClick={() => navigate("/my-tasks")}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              >
+                My Tasks
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+
           {selectedProject ? (
-            <>
-              <div className="bg-[#1a2a3a] rounded-xl p-6 shadow-lg mb-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h1 className="text-2xl font-bold text-white">{selectedProject.name}</h1>
-                  <span className="text-sm text-gray-300">Created: {new Date(selectedProject.id).toLocaleDateString()}</span>
+            <div className="space-y-6">
+              <div className="bg-[#1a2a3a] rounded-xl p-6 shadow-lg">
+                <h2 className="text-xl font-bold mb-4">{selectedProject.name}</h2>
+                <p className="text-gray-300 mb-4">{selectedProject.description}</p>
+
+                
+                <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
+                  <div
+                    className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-gray-300 mb-2">📊 Project Progress</p>
-                    <div className="w-full bg-gray-700 rounded-full h-4 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-green-500 to-green-600 h-full text-xs font-bold text-center p-1 rounded-full transition-all duration-500"
-                        style={{ width: `${progress}%` }}
-                      >
-                        {progress}%
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-[#152029] p-4 rounded-lg">
-                      <p className="text-gray-400">Total Tasks</p>
-                      <p className="text-2xl font-bold">{totalTasks}</p>
-                    </div>
-                    <div className="bg-[#152029] p-4 rounded-lg">
-                      <p className="text-gray-400">Completed</p>
-                      <p className="text-2xl font-bold text-green-500">{completedTasks}</p>
-                    </div>
-                    <div className="bg-[#152029] p-4 rounded-lg">
-                      <p className="text-gray-400">Remaining</p>
-                      <p className="text-2xl font-bold text-yellow-500">{totalTasks - completedTasks}</p>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-sm text-gray-400 mb-4">
+                  {completedTasks}/{totalTasks} tasks completed ({progress}%)
+                </p>
               </div>
 
               <TaskManager
@@ -194,27 +188,68 @@ const Dashboard = () => {
                 onConfirm={handleConfirmTasks}
                 selectedProject={selectedProject}
               />
-            </>
+            </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="text-6xl mb-4">📋</div>
-              <h2 className="text-2xl font-bold text-white mb-2">No Project Selected</h2>
-              <p className="text-gray-400 mb-6">Select a project from the sidebar or create a new one to get started.</p>
-              <button 
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
+            <div className="flex flex-col items-center justify-center h-64 bg-[#1a2a3a] rounded-xl p-6">
+              <p className="text-xl text-gray-400 mb-4">No project selected</p>
+              <button
                 onClick={() => setShowAddProjectModal(true)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
               >
-                <span>➕</span> Create New Project
+                Create New Project
               </button>
             </div>
           )}
         </div>
       </div>
-
-      {showAddProjectModal && (
-        <AddProjectModal onClose={() => setShowAddProjectModal(false)} onSubmit={handleAddProject} />
-      )}
     </div>
+
+    {showAddProjectModal && (
+      <AddProjectModal
+        onClose={() => setShowAddProjectModal(false)}
+        onSubmit={handleAddProject}
+      />
+    )}
+
+    {/* Team Members Modal */}
+    {showTeamMembersModal && selectedProject && (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-[#1a2a3a] p-6 rounded-xl shadow-2xl w-[500px] border border-gray-700">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">Team Members - {selectedProject.name}</h3>
+            <button 
+              onClick={() => setShowTeamMembersModal(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            {selectedProject.team && selectedProject.team.map((member, index) => (
+              <div key={index} className="bg-[#152029] p-4 rounded-lg">
+                <h4 className="font-medium text-white text-lg">{member.name}</h4>
+                <p className="text-sm text-gray-400 mt-1">
+                  <span className="inline-block mr-1">📧</span> 
+                  {member.email}
+                </p>
+                <p className="text-sm text-gray-400 mt-1">
+                  <span className="inline-block mr-1">🛠️</span> 
+                  {member.skills}
+                </p>
+              </div>
+            ))}
+          </div>
+          
+          <button 
+            onClick={() => setShowTeamMembersModal(false)}
+            className="mt-6 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
     </>
   );
 };

@@ -54,10 +54,15 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
       return;
     }
 
+    // Find the team member's email based on the selected name
+    const assignedMember = selectedProject.team.find(member => member.name === newTask.assignedTo);
+    const assignedEmail = assignedMember ? assignedMember.email : '';
+
     const task = {
       ...newTask,
       id: Date.now(),
-      projectId: selectedProject.id
+      projectId: selectedProject.id,
+      assignedEmail: assignedEmail
     };
 
     setTasks([...tasks, task]);
@@ -262,13 +267,18 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
               </div>
               <div>
                 <label className="block mb-2 text-gray-300">Assigned To</label>
-                <input
-                  type="text"
+                <select
                   value={newTask.assignedTo}
                   onChange={(e) => handleNewTaskChange(e, "assignedTo")}
                   className="w-full p-2 rounded-lg border border-gray-600 bg-[#152029] text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                  placeholder="Enter assignee name"
-                />
+                >
+                  <option value="">Select Team Member</option>
+                  {selectedProject.team && selectedProject.team.map((member, index) => (
+                    <option key={index} value={member.name}>
+                      {member.name} ({member.skills})
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block mb-2 text-gray-300">Deadline</label>
@@ -298,7 +308,7 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
         </div>
       )}
 
-      {/* Edit Task Dialog */}
+      {/* Edit Task Dialog - Also update this to use a dropdown */}
       {showEditDialog && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-[#1a2a3a] p-6 rounded-xl shadow-2xl w-96 border border-gray-700">
@@ -315,12 +325,18 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
               </div>
               <div>
                 <label className="block mb-2 text-gray-300">Assigned To</label>
-                <input
-                  type="text"
+                <select
                   value={editedTask.assignedTo}
                   onChange={(e) => handleChange(e, "assignedTo")}
                   className="w-full p-2 rounded-lg border border-gray-600 bg-[#152029] text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                />
+                >
+                  <option value="">Select Team Member</option>
+                  {selectedProject.team && selectedProject.team.map((member, index) => (
+                    <option key={index} value={member.name}>
+                      {member.name} ({member.skills})
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block mb-2 text-gray-300">Deadline</label>
