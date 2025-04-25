@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-const Sidebar = ({ projects, onArchive, onComplete, onAddProject, onSelectProject, onDeleteProject }) => {
+// Remove onComplete from props
+const Sidebar = ({ projects, onArchive, onAddProject, onSelectProject, onDeleteProject }) => {
   const [filter, setFilter] = useState("active");
 
   const filteredProjects = projects.filter((p) => {

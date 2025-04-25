@@ -124,6 +124,21 @@ const Dashboard = () => {
     }
   };
 
+  // Update the setTasks function to also update the projects array
+  const handleTasksUpdate = (newTasks) => {
+    setTasks(newTasks);
+    
+    // Update the selected project's tasks
+    const updatedSelectedProject = { ...selectedProject, tasks: newTasks };
+    setSelectedProject(updatedSelectedProject);
+    
+    // Update the projects array
+    const updatedProjects = projects.map(p => 
+      p.id === selectedProject.id ? updatedSelectedProject : p
+    );
+    setProjects(updatedProjects);
+  };
+
   return (
     <>
     <div className="flex min-h-screen bg-gradient-to-br from-[#152029] to-[#1a2a3a] text-white">
@@ -184,7 +199,7 @@ const Dashboard = () => {
 
               <TaskManager
                 tasks={tasks}
-                setTasks={setTasks}
+                setTasks={handleTasksUpdate}
                 onConfirm={handleConfirmTasks}
                 selectedProject={selectedProject}
               />

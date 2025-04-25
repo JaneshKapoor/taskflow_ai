@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
-const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
+// Remove onConfirm from props
+const TaskManager = ({ tasks, setTasks, selectedProject }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
   const [editedTask, setEditedTask] = useState({});
@@ -65,7 +66,20 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
       assignedEmail: assignedEmail
     };
 
-    setTasks([...tasks, task]);
+    // Update both local state and parent component's state
+    const updatedTasks = [...tasks, task];
+    setTasks(updatedTasks);
+    
+    // Update the project in localStorage
+    const savedProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+    const updatedProjects = savedProjects.map(p => {
+      if (p.id === selectedProject.id) {
+        return { ...p, tasks: updatedTasks };
+      }
+      return p;
+    });
+    localStorage.setItem('projects', JSON.stringify(updatedProjects));
+
     setShowAddTaskDialog(false);
     setNewTask({
       name: "",
@@ -90,40 +104,40 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
   const pendingTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
 
-  const handleConfirmTasks = async () => {
-    try {
-      setIsConfirmed(true);
+  // const handleConfirmTasks = async () => {
+  //   try {
+  //     setIsConfirmed(true);
   
-      // Call the onConfirm function passed from parent component
-      if (onConfirm && typeof onConfirm === 'function') {
-        onConfirm(tasks);
-      }
+  //     // Call the onConfirm function passed from parent component
+  //     if (onConfirm && typeof onConfirm === 'function') {
+  //       onConfirm(tasks);
+  //     }
   
-      // Send tasks to backend for email notifications & database update
-      try {
-        const response = await fetch("/api/confirm-tasks", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tasks }),
-        });
+  //     // Send tasks to backend for email notifications & database update
+  //     try {
+  //       const response = await fetch("/api/confirm-tasks", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ tasks }),
+  //       });
   
-        const data = await response.json();
-        if (data.success) {
-          alert("Tasks confirmed! Emails sent & tasks assigned.");
-        } else {
-          alert("Failed to confirm tasks.");
-        }
-      } catch (error) {
-        console.error("Error confirming tasks:", error);
-        // Still mark as confirmed even if API fails
-        alert("Tasks confirmed locally. Email notifications may have failed.");
-      }
-    } catch (error) {
-      console.error("Error in task confirmation process:", error);
-    }
-  };
+  //       const data = await response.json();
+  //       if (data.success) {
+  //         alert("Tasks confirmed! Emails sent & tasks assigned.");
+  //       } else {
+  //         alert("Failed to confirm tasks.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error confirming tasks:", error);
+  //       // Still mark as confirmed even if API fails
+  //       alert("Tasks confirmed locally. Email notifications may have failed.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in task confirmation process:", error);
+  //   }
+  // };
 
   return (
     <div className="bg-[#1a2a3a] rounded-xl p-6 shadow-lg">
@@ -251,14 +265,14 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
         </div>
       )}
 
-      {!isConfirmed && (
+      {/* {!isConfirmed && (
         <button 
           className="mt-6 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg w-full hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center justify-center gap-2"
           onClick={handleConfirmTasks}
         >
           <span>✅</span> Confirm Task Assignments
         </button>
-      )}
+      )} */}
 
       {/* Add Task Dialog */}
       {showAddTaskDialog && (
