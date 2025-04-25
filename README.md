@@ -1,12 +1,29 @@
-# React + Vite
+# TaskFlow AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TaskFlow AI is an intelligent project management system that combines traditional task management with AI-powered assistance. It features Chitti, an AI assistant that helps manage tasks using natural language processing.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **AI Task Assistant (Chitti)**: Natural language processing for task management
+- **Real-time Task Management**: Drag-and-drop interface for task organization
+- **Team Collaboration**: Add team members and assign tasks
+- **Email Notifications**: Automatic notifications for task assignments
+- **Project Analytics**: Track project progress and team performance
+- **Interactive UI**: Beautiful particle-based background and modern design
+- **Secure Authentication**: Firebase-based user authentication
 
-## Expanding the ESLint configuration
+## 🚀 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React + Vite
+- Firebase Authentication
+- Google's Gemini AI API
+- EmailJS for notifications
+- TailwindCSS for styling
+- React DnD for drag-and-drop
+- TSParticles for background effects
+
+## 💻 Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/janeshKapoor/taskflow_ai.git
