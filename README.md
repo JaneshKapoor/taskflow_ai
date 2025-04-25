@@ -2,6 +2,13 @@
 
 TaskFlow AI is an intelligent project management system that combines traditional task management with AI-powered assistance. It features Chitti, an AI assistant that helps manage tasks using natural language processing.
 
+## Team Members
+
+- Ishan (2021465)
+- Janesh Kapoor (2021466)
+- Kunal (2021330)
+- Yugayu Garg (2021506)
+
 ## 🌟 Features
 
 - **AI Task Assistant (Chitti)**: Natural language processing for task management
