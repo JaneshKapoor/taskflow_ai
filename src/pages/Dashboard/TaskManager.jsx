@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 // Remove onConfirm from props
+import { sendTaskNotification } from "../../utils/notificationService";
+
 const TaskManager = ({ tasks, setTasks, selectedProject }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
@@ -49,7 +51,7 @@ const TaskManager = ({ tasks, setTasks, selectedProject }) => {
     setNewTask({ ...newTask, [field]: e.target.value });
   };
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (!newTask.name || !newTask.assignedTo || !newTask.deadline) {
       alert("Please fill in all fields");
       return;
@@ -63,13 +65,26 @@ const TaskManager = ({ tasks, setTasks, selectedProject }) => {
       ...newTask,
       id: Date.now(),
       projectId: selectedProject.id,
-      assignedEmail: assignedEmail
+      assignedEmail: assignedEmail,
+      projectName: selectedProject.name // Add project name for the email notification
     };
 
     // Update both local state and parent component's state
     const updatedTasks = [...tasks, task];
     setTasks(updatedTasks);
     
+    // Send email notification to the assigned team member
+    try {
+      const notificationResult = await sendTaskNotification(assignedEmail, task);
+      if (notificationResult.success) {
+        console.log("✅ Task notification email sent successfully");
+      } else {
+        console.warn("⚠️ Failed to send task notification email");
+      }
+    } catch (error) {
+      console.error("❌ Error sending task notification:", error);
+    }
+
     // Update the project in localStorage
     const savedProjects = JSON.parse(localStorage.getItem('projects') || '[]');
     const updatedProjects = savedProjects.map(p => {
