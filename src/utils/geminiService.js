@@ -5,16 +5,53 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI("AIzaSyA93TvDsCwkAiQJGfAUWjZZ29-d2FuMn8w");
 
 // Function to parse natural language into structured task data
+// Add date handling utilities at the top
+const getISTDate = () => {
+  return new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+};
+
+const parseRelativeDate = (dateText) => {
+  const today = new Date(getISTDate());
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  
+  const nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
+  
+  const nextMonth = new Date(today);
+  nextMonth.setMonth(today.getMonth() + 1);
+
+  const dateStr = dateText.toLowerCase();
+  let resultDate;
+
+  if (dateStr.includes('tomorrow')) {
+    resultDate = tomorrow;
+  } else if (dateStr.includes('next week')) {
+    resultDate = nextWeek;
+  } else if (dateStr.includes('next month')) {
+    resultDate = nextMonth;
+  } else {
+    return dateText; // Return original if not a relative date
+  }
+
+  return resultDate.toISOString().split('T')[0];
+};
+
+// Update the parseTaskFromText function
 export const parseTaskFromText = async (text) => {
   try {
-    // Get the generative model - updated to use gemini-1.5-flash
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const currentDate = new Date(getISTDate()).toISOString().split('T')[0];
 
-    // Create a prompt that instructs the model how to parse the text
     const prompt = `
+      Today's date in IST is: ${currentDate}
+      
       Parse the following text into a structured task. Extract:
       1. Task title/name
-      2. Due date (convert relative dates like "next Monday" to YYYY-MM-DD format)
+      2. Due date (convert relative dates to YYYY-MM-DD format based on today's IST date)
+         - "tomorrow" means ${parseRelativeDate('tomorrow')}
+         - "next week" means ${parseRelativeDate('next week')}
+         - "next month" means ${parseRelativeDate('next month')}
       3. Assignee (the team member who should do the task)
       
       Return ONLY a JSON object with these fields: 
@@ -23,15 +60,18 @@ export const parseTaskFromText = async (text) => {
       Text to parse: "${text}"
     `;
 
-    // Generate content
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
     
-    // Extract the JSON from the response
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const parsedData = JSON.parse(jsonMatch[0]);
+      // Convert any relative dates in the response
+      if (parsedData.deadline) {
+        parsedData.deadline = parseRelativeDate(parsedData.deadline);
+      }
+      return parsedData;
     }
     
     throw new Error("Could not parse task from text");
