@@ -7,6 +7,7 @@ import AddProjectModal from "./AddProjectModal";
 import TaskManager from "./Taskmanager";
 import { generateTasks } from "../../utils/gptService";
 import "../../layouts/Dashboard.css"
+import Chitti from "../../components/Chitti";
 
 const Dashboard = () => {
   const [_user, setUser] = useState(null);
@@ -265,6 +266,12 @@ const Dashboard = () => {
         </div>
       </div>
     )}
+    {/* Add Chitti component */}
+    <Chitti 
+      selectedProject={selectedProject} 
+      tasks={tasks} 
+      setTasks={handleTasksUpdate} 
+    />
     </>
   );
 };
