@@ -94,23 +94,34 @@ const TaskManager = ({ tasks, setTasks, onConfirm, selectedProject }) => {
     try {
       setIsConfirmed(true);
   
-      // Send tasks to backend for email notifications & database update
-      const response = await fetch("/api/confirm-tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tasks }),
-      });
+      // Call the onConfirm function passed from parent component
+      if (onConfirm && typeof onConfirm === 'function') {
+        onConfirm(tasks);
+      }
   
-      const data = await response.json();
-      if (data.success) {
-        alert("Tasks confirmed! Emails sent & tasks assigned.");
-      } else {
-        alert("Failed to confirm tasks.");
+      // Send tasks to backend for email notifications & database update
+      try {
+        const response = await fetch("/api/confirm-tasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tasks }),
+        });
+  
+        const data = await response.json();
+        if (data.success) {
+          alert("Tasks confirmed! Emails sent & tasks assigned.");
+        } else {
+          alert("Failed to confirm tasks.");
+        }
+      } catch (error) {
+        console.error("Error confirming tasks:", error);
+        // Still mark as confirmed even if API fails
+        alert("Tasks confirmed locally. Email notifications may have failed.");
       }
     } catch (error) {
-      console.error("Error confirming tasks:", error);
+      console.error("Error in task confirmation process:", error);
     }
   };
 

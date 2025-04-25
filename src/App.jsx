@@ -1,7 +1,15 @@
 import ParticlesBackground from "./components/ParticlesBackground";
 import AppRoutes from "./routes";
+import { useEffect } from "react";
+import { initEmailJS } from "./utils/notificationService";
 
 function App() {
+  useEffect(() => {
+    // Initialize EmailJS when the app loads
+    initEmailJS();
+    console.log("📧 EmailJS initialized");
+  }, []);
+
   return (
     <div style={{ position: "relative", minHeight: "100vh", backgroundColor: "#152029" }}>
       <ParticlesBackground />  {/* Background applied globally */}
