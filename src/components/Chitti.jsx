@@ -6,7 +6,7 @@ const Chitti = ({ selectedProject, tasks, setTasks }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { 
-      text: "Hi, I'm Chitti! I can help you manage tasks using natural language. Try saying something like 'Remind John to send the report by next Friday'", 
+      text: "Hi, I'm Chitti! I can help you manage tasks using natural language. Try saying something like 'Remind Janesh to send the report by next Friday'", 
       sender: "bot" 
     }
   ]);
